@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.sencondkill.mapper.SuccessKilledMapper">
+
+    <!--主键冲突报错,忽略错误返回0-->
+    <insert id="insertSuccessKill" parameterType="SuccessKilled">
+        INSERT ignore INTO success_kill
+        VALUES(#{seckillId},#{userPhone},0,#{createTime})
+    </insert>
+
+    <!--关联查询,使用列别名的方式进行赋值,然后使用驼峰方式映射-->
+    <select id="queryByIdAndUserPhone" parameterType="map" resultType="SuccessKilled">
+        SELECT
+            sk.seckill_id,
+            sk.user_phone,
+            sk.state,
+            sk.create_time,
+            se.seckill_id "seckill.seckill_id",
+            se.product_name "seckill.product_name",
+            se.number "seckill.number",
+            se.start_time "seckill.start_time",
+            se.end_time "seckill.end_time",
+            se.create_time "seckill.create_time"
+        FROM success_kill AS sk
+        INNER JOIN seckill AS se
+        ON se.seckill_id = sk.seckill_id
+        WHERE sk.seckill_id=#{seckillId}
+        AND sk.user_phone=#{userPhone}
+    </select>
+</mapper>
